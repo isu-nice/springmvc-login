@@ -105,5 +105,28 @@ public class LoginController {
         return "redirect:/";
     }
 
+//    @PostMapping("/logout")
+    public String logoutV2(HttpServletRequest request) {
+        sessionManager.expire(request);
+        return "redirect:/";
+    }
 
+    @PostMapping("/logout")
+    public String logoutV3(HttpServletRequest request) {
+        // true로 설정하면 세션이 없는 경우 새로 생성하기 때문에 false로 가져옴
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate(); // 세션 안의 내용이 다 날아감
+        }
+
+        return "redirect:/";
+    }
+
+    private static void expireCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+    }
 }
